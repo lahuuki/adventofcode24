@@ -101,7 +101,7 @@
 #' @export
 #' @examples
 #' f01a(example_data_01()) #11
-#' f01b()
+#' f01b(example_data_01()) #31
 f01a <- function(x) {
 
   input <- read.table(x)
@@ -119,7 +119,17 @@ f01a <- function(x) {
 #' @export
 f01b <- function(x) {
 
-}
+  input <- read.table(x)
+
+  left_list <- input$V1
+  right_list <- input$V2
+
+  # left_tab <- table(left_list)
+  right_tab <- table(right_list)
+
+  lookup <- right_tab[match(left_list, names(right_tab))]
+  return(sum(left_list * lookup, na.rm = TRUE))
+  }
 
 
 
