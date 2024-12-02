@@ -1,7 +1,7 @@
 library(adventofcode24)
-x <- readLines("./inst/input01.txt")
+x <- "./inst/input01.txt"
 
-p1 <- f01a(x)
+(p1 <- f01a(x))
 p2 <- f01b(x)
 
 stopifnot(p1 == aoc_solutions$day01a)

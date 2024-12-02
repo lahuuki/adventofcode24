@@ -1,7 +1,7 @@
 #' Advent of Code 2024 solutions
 #' @export
 aoc_solutions <- list(
-  day01a = NA,
+  day01a = 1506483,
   day01b = NA,
   day02a = NA,
   day02b = NA,
