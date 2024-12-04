@@ -72,8 +72,8 @@
 #' @export
 #' @examples
 #' f04a(example_data_04())
-#' f04a(example_data_04(2)) #15, should be 18
-#' f04a(example_data_04(3)) #15, should be 18
+#' f04a(example_data_04(2)) #18
+#' f04a(example_data_04(3))
 #' f04b()
 f04a <- function(x) {
 
@@ -91,21 +91,14 @@ f04a <- function(x) {
   input_diagonal_left <- purrr::map_chr(1:corner_length, ~f04_diagonal(.x, slant = "left", input_mat = input_mat))
   input_diagonal_right <- purrr::map_chr(1:corner_length, ~f04_diagonal(.x, slant = "right", input_mat = input_mat))
 
-  matches <- purrr::map(list(horizontal = input,
-               vertical = input_vertical,
-               diag_left = input_diagonal_left,
-               diag_right = input_diagonal_right),
-      ~stringr::str_extract_all(.x, "SAMXMAS|XMASAMX|XMAS|SAMX"))
-      # ~unlist(stringr::str_extract_all(.x, "SAMXMAS|XMASAMX|XMAS|SAMX")))
+  matches <- purrr::map_int(list(horizontal = input,
+                             vertical = input_vertical,
+                             diag_left = input_diagonal_left,
+                             diag_right = input_diagonal_right),
+                        ~sum(stringr::str_count(.x, "XMAS"),
+                             stringr::str_count(.x, "SAMX")))
 
-  # return(matches)
-
-  ## replace double match with 2
-  matches <- unlist(matches)
-  matches_num <- rep(1, length(matches))
-  matches_num[grepl("SAMXMAS|XMASAMX", matches)] <- 2
-
-  return(sum(matches_num))
+  return(sum(matches))
 }
 
 
