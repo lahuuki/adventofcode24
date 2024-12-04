@@ -87,8 +87,6 @@ f04a <- function(x) {
   input_vertical <- apply(input_mat, 1, paste0, collapse = "")
   # cat(input_vertical, sep = "\n")
 
-  matches <- c(unlist(match_horizontal), unlist(match_horizontal))
-
   corner_length <- sum(dim(input_mat)) -1
   input_diagonal_left <- purrr::map_chr(1:corner_length, ~f04_diagonal(.x, slant = "left", input_mat = input_mat))
   input_diagonal_right <- purrr::map_chr(1:corner_length, ~f04_diagonal(.x, slant = "right", input_mat = input_mat))
@@ -97,7 +95,8 @@ f04a <- function(x) {
                vertical = input_vertical,
                diag_left = input_diagonal_left,
                diag_right = input_diagonal_right),
-      ~unlist(stringr::str_extract_all(.x, "SAMXMAS|XMASAMX|XMAS|SAMX")))
+      ~stringr::str_extract_all(.x, "SAMXMAS|XMASAMX|XMAS|SAMX"))
+      # ~unlist(stringr::str_extract_all(.x, "SAMXMAS|XMASAMX|XMAS|SAMX")))
 
   # return(matches)
 
@@ -119,13 +118,12 @@ f04b <- function(x) {
 
 f04_diagonal <- function(i, slant = c("right", "left"), input_mat = input_mat) {
 
-  if(slant == "left"){
-    letters <- purrr::map2(1:i, i:1, ~input_mat[.x,.y])
-
-  } else if(slant == "right"){
+ if(slant == "right"){
     input_mat <- input_mat[,ncol(input_mat):1]
-    letters <- purrr::map2(1:i, i:1, ~input_mat[.x,.y])
-  }
+ }
+
+  letters <- purrr::map2(i:1, 1:i, ~input_mat[.x,.y])
+
   letters <- unlist(letters)
   letters <- letters[!is.na(letters)]
   return(paste0(letters, collapse = ""))
