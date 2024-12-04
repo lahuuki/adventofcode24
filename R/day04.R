@@ -104,10 +104,59 @@ f04a <- function(x) {
 
 #' @rdname day04
 #' @export
+#' @examples
+#' x <- example_data_04(4)
+#' f04b(example_data_04(4)) #9
 f04b <- function(x) {
+
+  input <- readLines(x)
+
+  input_mat <- t(data.frame(strsplit(input, "")))
+  rownames(input_mat) <- NULL
+
+  a_index <- which(input_mat == "A", arr.ind = TRUE)
+
+  x_list <- apply(a_index, 1, f04_get_x)
+  # x_list <- x_list[!is.na(x_list)]
+  x_test <- lapply(x_list, f04_test_x)
+
+  return(sum(unlist(x_test)))
 
 }
 
+#' @examples
+#' x_test <- f04_get_x(c(2,3), input_mat)
+f04_get_x <- function(ai, mat = input_mat){
+
+  row <- ai[[1]]
+  col <- ai[[2]]
+
+  if(row == 1 | col == 1 | row == nrow(mat) | col == ncol(mat)){
+    return(NA)
+  }
+
+  top_row = row - 1
+  bot_row = row +1
+  lef_col = col -1
+  rig_col = col +1
+
+  x = c(top_lef = mat[top_row, lef_col],
+           top_rig = mat[top_row, rig_col],
+           bot_lef = mat[bot_row, lef_col],
+           not_rig = mat[bot_row, rig_col]
+  )
+
+  return(x)
+}
+
+#' @examples
+#' f04_test_x(x_test)
+f04_test_x <- function(x){
+  if(any(is.na(x))) return(FALSE)
+  else{
+    return(setequal(c("S", "M"), x))
+  }
+}
 
 f04_diagonal <- function(i, slant = c("right", "left"), input_mat = input_mat) {
 
@@ -130,7 +179,7 @@ f04_diagonal <- function(i, slant = c("right", "left"), input_mat = input_mat) {
 #' @export
 #' @examples
 #' file.create(example_data_04())
-#' file.create(example_data_04(3))
+#' file.create(example_data_04(4))
 example_data_04 <- function(example = 1) {
   here::here("inst","testdata",paste0("testdata04.",example,".txt"))
 }
