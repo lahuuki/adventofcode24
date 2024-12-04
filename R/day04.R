@@ -107,16 +107,23 @@ f04a <- function(x) {
 #' @examples
 #' x <- example_data_04(4)
 #' f04b(example_data_04(4)) #9
-f04b <- function(x) {
+#' input_fn <- example_data_04(4)
+#' input_fn <- "./inst/input04.txt"
+f04b <- function(input_fn) {
 
-  input <- readLines(x)
+  input <- readLines(input_fn)
 
   input_mat <- t(data.frame(strsplit(input, "")))
   rownames(input_mat) <- NULL
 
+  dim(input_mat)
+
   a_index <- which(input_mat == "A", arr.ind = TRUE)
 
   x_list <- apply(a_index, 1, f04_get_x)
+
+  # table(is.na(x_list))
+
   # x_list <- x_list[!is.na(x_list)]
   x_test <- lapply(x_list, f04_test_x)
 
@@ -140,10 +147,10 @@ f04_get_x <- function(ai, mat = input_mat){
   lef_col = col -1
   rig_col = col +1
 
-  x = c(top_lef = mat[top_row, lef_col],
+  x = list(top_lef = mat[top_row, lef_col],
            top_rig = mat[top_row, rig_col],
            bot_lef = mat[bot_row, lef_col],
-           not_rig = mat[bot_row, rig_col]
+           bot_rig = mat[bot_row, rig_col]
   )
 
   return(x)
@@ -152,9 +159,9 @@ f04_get_x <- function(ai, mat = input_mat){
 #' @examples
 #' f04_test_x(x_test)
 f04_test_x <- function(x){
-  if(any(is.na(x))) return(FALSE)
-  else{
-    return(setequal(c("S", "M"), x))
+ if(!setequal(c("S", "M"), x)) return(FALSE)
+  else {
+    return(x$top_lef != x$bot_rig & x$top_rig != x$bot_lef)
   }
 }
 
